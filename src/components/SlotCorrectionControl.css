@@ -1,0 +1,140 @@
+.slot-correction-control {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+  border-left: 4px solid #f59e0b;
+}
+
+.slot-correction-control h3 {
+  margin: 0 0 8px 0;
+  color: #1f2937;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.slot-correction-control p {
+  margin: 0 0 20px 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.correction-input-group {
+  margin-bottom: 20px;
+}
+
+.correction-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.current-value {
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-weight: 600;
+  color: #f59e0b;
+  background: #fef3c7;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.correction-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.correction-input {
+  padding: 10px 12px;
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-weight: 600;
+  background: white;
+  transition: border-color 0.2s ease;
+}
+
+.correction-input:focus {
+  outline: none;
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.correction-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.reset-button {
+  flex: 1;
+  padding: 10px 16px;
+  background: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.reset-button:hover {
+  background: #4b5563;
+}
+
+.apply-correction-button {
+  flex: 2;
+  padding: 10px 16px;
+  background: #f59e0b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.apply-correction-button:hover {
+  background: #d97706;
+}
+
+.reset-button:focus,
+.apply-correction-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3);
+}
+
+.correction-info {
+  background: #fef3c7;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #fbbf24;
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #92400e;
+  min-width: 100px;
+  font-size: 0.85rem;
+}
+
+.info-desc {
+  color: #92400e;
+  font-size: 0.85rem;
+}
