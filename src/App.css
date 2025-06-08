@@ -6,28 +6,61 @@
 }
 
 .app-header {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.app-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+  padding: 24px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: white;
+  margin-bottom: 24px;
+  border-radius: 12px;
 }
 
-.app-header p {
+.header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.header-text {
+  flex: 1;
+}
+
+.header-text h1 {
+  font-size: 2.5rem;
+  margin: 0 0 0.5rem 0;
+  color: white;
+}
+
+.header-text p {
   font-size: 1.1rem;
-  color: #666;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+.header-controls {
+  flex-shrink: 0;
+  min-width: 500px;
+  display: flex;
+  gap: 24px;
 }
 
 .app-main {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.workflow-section {
+  /* Contains OptimizationWorkflow with 2 columns */
+}
+
+.explorer-section {
+  /* Contains ParameterExplorer */
 }
 
 .controls-section {
@@ -40,6 +73,25 @@
   width: 100%;
 }
 
+@media (max-width: 1400px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .header-main {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .header-controls {
+    min-width: auto;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
 @media (max-width: 768px) {
   .app {
     padding: 1rem;
@@ -47,5 +99,10 @@
   
   .controls-section {
     flex-direction: column;
+  }
+  
+  .header-controls {
+    flex-direction: column;
+    gap: 12px;
   }
 }

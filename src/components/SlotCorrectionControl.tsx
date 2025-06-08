@@ -25,7 +25,7 @@ export function SlotCorrectionControl({ optimizer, onFactorChange }: SlotCorrect
   return (
     <div className="slot-correction-control">
       <h3>Slot Correction Factor</h3>
-      <p>Heuristic correction for slot geometry (0.5 - 1.5)</p>
+      <p>Geometry correction (0.9 - 1.1)</p>
       
       <div className="correction-input-group">
         <label className="correction-label">
@@ -39,8 +39,8 @@ export function SlotCorrectionControl({ optimizer, onFactorChange }: SlotCorrect
             className="correction-input"
             value={tempFactor}
             onChange={(e) => setTempFactor(Number(e.target.value))}
-            min={0.5}
-            max={1.5}
+            min={0.9}
+            max={1.1}
             step={0.01}
             placeholder="0.950"
           />
@@ -69,7 +69,7 @@ export function SlotCorrectionControl({ optimizer, onFactorChange }: SlotCorrect
         </div>
         <div className="info-item">
           <span className="info-label">Range:</span>
-          <span className="info-desc">0.5 (deep slots) - 1.5 (no slots)</span>
+          <span className="info-desc">0.9 - 1.1</span>
         </div>
         <div className="info-item">
           <span className="info-label">Effect:</span>

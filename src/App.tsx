@@ -1,41 +1,23 @@
 import { useState } from 'react';
 import { IonTrapOptimizer, TargetSpecs } from './utils/ionTrapOptimizer';
-import { ParameterControls } from './components/ParameterControls';
 import { ParameterExplorer } from './components/ParameterExplorer';
+import { OptimizationWorkflow } from './components/OptimizationWorkflow';
 import { SlotCorrectionControl } from './components/SlotCorrectionControl';
-import { VisualizationTabs } from './components/VisualizationTabs';
-import { ResultsSummary } from './components/ResultsSummary';
+import { ParameterRangesControl } from './components/ParameterRangesControl';
 import './App.css';
 
 function App() {
   const [optimizer] = useState(() => new IonTrapOptimizer());
   const [targetSpecs, setTargetSpecs] = useState<TargetSpecs>(optimizer.target_specs);
-  const [isCalculating, setIsCalculating] = useState(false);
   const [correctionUpdateKey, setCorrectionUpdateKey] = useState(0);
-  const [results, setResults] = useState<{
-    a70Results: ReturnType<IonTrapOptimizer['analyzeA70Limitations']>;
-    smallAResults: ReturnType<IonTrapOptimizer['analyzeParameterSpace']>;
-  } | null>(null);
-
-  const handleCalculate = async () => {
-    setIsCalculating(true);
-    
-    // Update optimizer with new target specs
-    optimizer.target_specs = targetSpecs;
-    
-    // Simulate async calculation
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    const a70Results = optimizer.analyzeA70Limitations();
-    const smallAResults = optimizer.analyzeParameterSpace();
-    
-    setResults({
-      a70Results,
-      smallAResults
-    });
-    
-    setIsCalculating(false);
-  };
+  
+  // Global parameter ranges
+  const [globalRanges, setGlobalRanges] = useState({
+    a: { min: 30, max: 80 },
+    b: { min: 70, max: 200 },
+    V_rf: { min: 100, max: 400 },
+    F_rf: { min: 10, max: 40 }
+  });
 
   const handleCorrectionFactorChange = () => {
     // Force ParameterExplorer to recalculate by updating key
@@ -45,47 +27,46 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Ion Trap Parameter Optimizer</h1>
-        <p>Interactive tool for optimizing ion trap parameters</p>
+        <div className="header-main">
+          <div className="header-text">
+            <h1>Ion Trap Parameter Optimizer</h1>
+            <p>Interactive tool for optimizing ion trap parameters</p>
+          </div>
+          <div className="header-controls">
+            <SlotCorrectionControl 
+              optimizer={optimizer} 
+              onFactorChange={handleCorrectionFactorChange}
+            />
+            <ParameterRangesControl 
+              globalRanges={globalRanges}
+              onRangesChange={setGlobalRanges}
+            />
+          </div>
+        </div>
       </header>
 
       <main className="app-main">
-        <div className="controls-section">
-          <ParameterControls
-            targetSpecs={targetSpecs}
-            onSpecsChange={setTargetSpecs}
-            onCalculate={handleCalculate}
-            isCalculating={isCalculating}
-          />
-          
-          <SlotCorrectionControl 
-            optimizer={optimizer} 
-            onFactorChange={handleCorrectionFactorChange}
-          />
-          
-          <ParameterExplorer 
-            key={correctionUpdateKey}
-            optimizer={optimizer} 
-            targetSpecs={targetSpecs} 
-          />
-          
-          {results && (
-            <ResultsSummary
-              a70Results={results.a70Results}
-              smallAResults={results.smallAResults}
-            />
-          )}
-        </div>
-
-        {results && (
-          <div className="visualization-section">
-            <VisualizationTabs
-              a70Results={results.a70Results}
-              smallAResults={results.smallAResults}
+        <div className="main-layout">
+          <div className="workflow-section">
+            <OptimizationWorkflow 
+              key={`workflow-${correctionUpdateKey}`}
+              optimizer={optimizer} 
               targetSpecs={targetSpecs}
+              globalRanges={globalRanges}
+              onTargetSpecsChange={setTargetSpecs}
             />
           </div>
-        )}
+          
+          <div className="explorer-section">
+            <ParameterExplorer 
+              key={`explorer-${correctionUpdateKey}`}
+              optimizer={optimizer} 
+              targetSpecs={targetSpecs}
+              globalRanges={globalRanges}
+              onRangesChange={setGlobalRanges}
+            />
+          </div>
+        </div>
       </main>
     </div>
   );

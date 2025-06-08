@@ -6,54 +6,28 @@ import './ParameterExplorer.css';
 interface ParameterExplorerProps {
   optimizer: IonTrapOptimizer;
   targetSpecs: TargetSpecs;
+  globalRanges: {
+    a: { min: number; max: number };
+    b: { min: number; max: number };
+    V_rf: { min: number; max: number };
+    F_rf: { min: number; max: number };
+  };
+  onRangesChange: (ranges: {
+    a: { min: number; max: number };
+    b: { min: number; max: number };
+    V_rf: { min: number; max: number };
+    F_rf: { min: number; max: number };
+  }) => void;
 }
 
-export function ParameterExplorer({ optimizer, targetSpecs }: ParameterExplorerProps) {
+export function ParameterExplorer({ optimizer, targetSpecs, globalRanges, onRangesChange }: ParameterExplorerProps) {
   const [a, setA] = useState(50);
   const [b, setB] = useState(80);
   const [V_rf, setV_rf] = useState(200);
   const [F_rf, setF_rf] = useState(20);
   
-  // Range controls
-  const [ranges, setRanges] = useState({
-    a: { min: 10, max: 100 },
-    b: { min: 50, max: 200 },
-    V_rf: { min: 50, max: 500 },
-    F_rf: { min: 5, max: 50 }
-  });
-  
-  // Temporary range values for editing
-  const [tempRanges, setTempRanges] = useState({
-    a: { min: 10, max: 100 },
-    b: { min: 50, max: 200 },
-    V_rf: { min: 50, max: 500 },
-    F_rf: { min: 5, max: 50 }
-  });
-  
-  const applyRanges = () => {
-    // Validate and fix ranges before applying
-    const fixedRanges = {
-      a: {
-        min: Math.max(5, tempRanges.a.min),
-        max: Math.max(tempRanges.a.min + 5, Math.min(150, tempRanges.a.max))
-      },
-      b: {
-        min: Math.max(20, tempRanges.b.min),
-        max: Math.max(tempRanges.b.min + 10, Math.min(300, tempRanges.b.max))
-      },
-      V_rf: {
-        min: Math.max(10, tempRanges.V_rf.min),
-        max: Math.max(tempRanges.V_rf.min + 20, Math.min(1000, tempRanges.V_rf.max))
-      },
-      F_rf: {
-        min: Math.max(1, tempRanges.F_rf.min),
-        max: Math.max(tempRanges.F_rf.min + 2, Math.min(100, tempRanges.F_rf.max))
-      }
-    };
-    
-    setRanges(fixedRanges);
-    setTempRanges(fixedRanges);
-  };
+  // Use global ranges
+  const ranges = globalRanges;
   
   const [trapParams, setTrapParams] = useState({
     q: 0,
@@ -102,133 +76,6 @@ export function ParameterExplorer({ optimizer, targetSpecs }: ParameterExplorerP
       <div className="explorer-grid">
         <div className="controls-panel">
           <h3>Input Parameters</h3>
-          
-          <div className="range-controls">
-            <h4>Parameter Ranges</h4>
-            
-            <div className="range-control-group">
-              <label className="range-label">a range (μm)</label>
-              <div className="range-inputs">
-                <input
-                  type="number"
-                  className="range-input"
-                  value={tempRanges.a.min}
-                  onChange={(e) => {
-                    const value = Number(e.target.value);
-                    setTempRanges(prev => ({ ...prev, a: { ...prev.a, min: value } }));
-                  }}
-                  step={1}
-                  placeholder="Min"
-                />
-                <span className="range-separator">-</span>
-                <input
-                  type="number"
-                  className="range-input"
-                  value={tempRanges.a.max}
-                  onChange={(e) => {
-                    const value = Number(e.target.value);
-                    setTempRanges(prev => ({ ...prev, a: { ...prev.a, max: value } }));
-                  }}
-                  step={1}
-                  placeholder="Max"
-                />
-              </div>
-            </div>
-            
-            <div className="range-control-group">
-              <label className="range-label">b range (μm)</label>
-              <div className="range-inputs">
-                <input
-                  type="number"
-                  className="range-input"
-                  value={tempRanges.b.min}
-                  onChange={(e) => {
-                    const value = Number(e.target.value);
-                    setTempRanges(prev => ({ ...prev, b: { ...prev.b, min: value } }));
-                  }}
-                  step={1}
-                  placeholder="Min"
-                />
-                <span className="range-separator">-</span>
-                <input
-                  type="number"
-                  className="range-input"
-                  value={tempRanges.b.max}
-                  onChange={(e) => {
-                    const value = Number(e.target.value);
-                    setTempRanges(prev => ({ ...prev, b: { ...prev.b, max: value } }));
-                  }}
-                  step={1}
-                  placeholder="Max"
-                />
-              </div>
-            </div>
-            
-            <div className="range-control-group">
-              <label className="range-label">V_RF range (V)</label>
-              <div className="range-inputs">
-                <input
-                  type="number"
-                  className="range-input"
-                  value={tempRanges.V_rf.min}
-                  onChange={(e) => {
-                    const value = Number(e.target.value);
-                    setTempRanges(prev => ({ ...prev, V_rf: { ...prev.V_rf, min: value } }));
-                  }}
-                  step={5}
-                  placeholder="Min"
-                />
-                <span className="range-separator">-</span>
-                <input
-                  type="number"
-                  className="range-input"
-                  value={tempRanges.V_rf.max}
-                  onChange={(e) => {
-                    const value = Number(e.target.value);
-                    setTempRanges(prev => ({ ...prev, V_rf: { ...prev.V_rf, max: value } }));
-                  }}
-                  step={5}
-                  placeholder="Max"
-                />
-              </div>
-            </div>
-            
-            <div className="range-control-group">
-              <label className="range-label">F_RF range (MHz)</label>
-              <div className="range-inputs">
-                <input
-                  type="number"
-                  className="range-input"
-                  value={tempRanges.F_rf.min}
-                  onChange={(e) => {
-                    const value = Number(e.target.value);
-                    setTempRanges(prev => ({ ...prev, F_rf: { ...prev.F_rf, min: value } }));
-                  }}
-                  step={0.5}
-                  placeholder="Min"
-                />
-                <span className="range-separator">-</span>
-                <input
-                  type="number"
-                  className="range-input"
-                  value={tempRanges.F_rf.max}
-                  onChange={(e) => {
-                    const value = Number(e.target.value);
-                    setTempRanges(prev => ({ ...prev, F_rf: { ...prev.F_rf, max: value } }));
-                  }}
-                  step={0.5}
-                  placeholder="Max"
-                />
-              </div>
-            </div>
-            
-            <button 
-              className="apply-ranges-button"
-              onClick={applyRanges}
-            >
-              Apply Ranges
-            </button>
-          </div>
           
           <div className="control-group">
             <label>
