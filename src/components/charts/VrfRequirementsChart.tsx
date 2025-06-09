@@ -10,7 +10,7 @@ interface VrfRequirementsChartProps {
 export function VrfRequirementsChart({ a70Results, smallAResults, targetSpecs }: VrfRequirementsChartProps) {
   // Prepare data for a=70
   const a70Data = a70Results
-    .filter((r, i) => i % 10 === 0) // Sample every 10th point for performance
+    .filter((_, i) => i % 10 === 0) // Sample every 10th point for performance
     .map(r => ({
       b: r.b,
       V_rf: r.V_rf_required,

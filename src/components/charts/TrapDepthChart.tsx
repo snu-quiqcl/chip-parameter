@@ -10,7 +10,7 @@ interface TrapDepthChartProps {
 export function TrapDepthChart({ a70Results, smallAResults, targetSpecs }: TrapDepthChartProps) {
   // Prepare data for a=70
   const a70Data = a70Results
-    .filter((r, i) => i % 10 === 0)
+    .filter((_, i) => i % 10 === 0)
     .map(r => ({
       b: r.b,
       depth: r.depth,

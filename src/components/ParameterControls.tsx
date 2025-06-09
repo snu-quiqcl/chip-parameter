@@ -29,7 +29,7 @@ export function ParameterControls({
       
       <div className="control-group">
         <label>
-          <span>Secular Frequency</span>
+          <span>Secular frequency must be higher than</span>
           <span className="value">{targetSpecs.secular_freq.toFixed(1)} MHz</span>
         </label>
         <Slider.Root
@@ -49,7 +49,7 @@ export function ParameterControls({
 
       <div className="control-group">
         <label>
-          <span>Max q-parameter</span>
+          <span>q-parameter must be lower than</span>
           <span className="value">{targetSpecs.q_max.toFixed(2)}</span>
         </label>
         <Slider.Root
@@ -69,7 +69,7 @@ export function ParameterControls({
 
       <div className="control-group">
         <label>
-          <span>Max RF Voltage</span>
+          <span>RF voltage must be lower than</span>
           <span className="value">{targetSpecs.V_rf_max.toFixed(0)} V</span>
         </label>
         <Slider.Root
@@ -89,7 +89,7 @@ export function ParameterControls({
 
       <div className="control-group">
         <label>
-          <span>Trap Depth Range</span>
+          <span>Trap depth must be within range</span>
           <span className="value">{targetSpecs.depth_min.toFixed(2)} - {targetSpecs.depth_max.toFixed(2)} eV</span>
         </label>
         <div className="double-slider">

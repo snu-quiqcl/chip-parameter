@@ -12,15 +12,9 @@ interface ParameterExplorerProps {
     V_rf: { min: number; max: number };
     F_rf: { min: number; max: number };
   };
-  onRangesChange: (ranges: {
-    a: { min: number; max: number };
-    b: { min: number; max: number };
-    V_rf: { min: number; max: number };
-    F_rf: { min: number; max: number };
-  }) => void;
 }
 
-export function ParameterExplorer({ optimizer, targetSpecs, globalRanges, onRangesChange }: ParameterExplorerProps) {
+export function ParameterExplorer({ optimizer, targetSpecs, globalRanges }: ParameterExplorerProps) {
   const [a, setA] = useState(50);
   const [b, setB] = useState(80);
   const [V_rf, setV_rf] = useState(200);
@@ -79,7 +73,7 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges, onRang
           
           <div className="control-group">
             <label>
-              <span>a (electrode gap)</span>
+              <span>center-innerDC</span>
               <span className="value">{a.toFixed(1)} μm</span>
             </label>
             <Slider.Root
@@ -99,7 +93,7 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges, onRang
 
           <div className="control-group">
             <label>
-              <span>b (electrode width)</span>
+              <span>center-RF</span>
               <span className="value">{b.toFixed(1)} μm</span>
             </label>
             <Slider.Root

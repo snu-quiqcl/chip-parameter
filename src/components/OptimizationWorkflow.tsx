@@ -41,6 +41,8 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
   
   // Step 4: Parameter sweep results
   const [sweepResults, setSweepResults] = useState<ParameterPoint[]>([]);
+  const [showOnlyFeasible, setShowOnlyFeasible] = useState(false);
+  const [isCalculating, setIsCalculating] = useState(false);
   
   // Calculate a-b tradeoff for current target height
   useEffect(() => {
@@ -70,50 +72,56 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
     }
   }, [targetHeight, abIndex, optimizer.slot_correction_factor]);
   
-  // Calculate parameter sweep when fixing mode changes
-  useEffect(() => {
+  // Manual parameter sweep calculation
+  const calculateParameterSweep = async () => {
     if (!selectedAB || !fixingMode) {
       setSweepResults([]);
       return;
     }
     
-    const { a, b } = selectedAB;
-    const points: ParameterPoint[] = [];
+    setIsCalculating(true);
     
-    if (fixingMode === 'q') {
-      // Fix q-parameter, sweep V_rf and F_rf
-      for (let V_rf = globalRanges.V_rf.min; V_rf <= globalRanges.V_rf.max; V_rf += 2) {
-        for (let F_rf = globalRanges.F_rf.min; F_rf <= globalRanges.F_rf.max; F_rf += 0.2) {
-          const q = optimizer.calculateQParameter(a, b, V_rf, F_rf);
-          if (Math.abs(q - fixedValue) < 0.001) { // Close to fixed value
-            const depth = optimizer.calculateTrapDepth(a, b, V_rf, F_rf);
-            const secular_freq = optimizer.calculateSecularFrequency(a, b, V_rf, F_rf);
-            points.push({ a, b, V_rf, F_rf, q, depth, secular_freq });
+    // Use setTimeout to allow UI to update
+    setTimeout(() => {
+      const { a, b } = selectedAB;
+      const points: ParameterPoint[] = [];
+      
+      if (fixingMode === 'q') {
+        // Fix q-parameter, sweep V_rf and F_rf
+        for (let V_rf = globalRanges.V_rf.min; V_rf <= globalRanges.V_rf.max; V_rf += 1) {
+          for (let F_rf = globalRanges.F_rf.min; F_rf <= globalRanges.F_rf.max; F_rf += 0.05) {
+            const q = optimizer.calculateQParameter(a, b, V_rf, F_rf);
+            if (Math.abs(q - fixedValue) < 0.001) { // Close to fixed value
+              const depth = optimizer.calculateTrapDepth(a, b, V_rf, F_rf);
+              const secular_freq = optimizer.calculateSecularFrequency(a, b, V_rf, F_rf);
+              points.push({ a, b, V_rf, F_rf, q, depth, secular_freq });
+            }
           }
         }
+      } else if (fixingMode === 'V_rf') {
+        // Fix V_rf, sweep F_rf
+        const V_rf = fixedValue;
+        for (let F_rf = globalRanges.F_rf.min; F_rf <= globalRanges.F_rf.max; F_rf += 0.05) {
+          const q = optimizer.calculateQParameter(a, b, V_rf, F_rf);
+          const depth = optimizer.calculateTrapDepth(a, b, V_rf, F_rf);
+          const secular_freq = optimizer.calculateSecularFrequency(a, b, V_rf, F_rf);
+          points.push({ a, b, V_rf, F_rf, q, depth, secular_freq });
+        }
+      } else if (fixingMode === 'F_rf') {
+        // Fix F_rf, sweep V_rf
+        const F_rf = fixedValue;
+        for (let V_rf = globalRanges.V_rf.min; V_rf <= globalRanges.V_rf.max; V_rf += 1) {
+          const q = optimizer.calculateQParameter(a, b, V_rf, F_rf);
+          const depth = optimizer.calculateTrapDepth(a, b, V_rf, F_rf);
+          const secular_freq = optimizer.calculateSecularFrequency(a, b, V_rf, F_rf);
+          points.push({ a, b, V_rf, F_rf, q, depth, secular_freq });
+        }
       }
-    } else if (fixingMode === 'V_rf') {
-      // Fix V_rf, sweep F_rf
-      const V_rf = fixedValue;
-      for (let F_rf = globalRanges.F_rf.min; F_rf <= globalRanges.F_rf.max; F_rf += 0.01) {
-        const q = optimizer.calculateQParameter(a, b, V_rf, F_rf);
-        const depth = optimizer.calculateTrapDepth(a, b, V_rf, F_rf);
-        const secular_freq = optimizer.calculateSecularFrequency(a, b, V_rf, F_rf);
-        points.push({ a, b, V_rf, F_rf, q, depth, secular_freq });
-      }
-    } else if (fixingMode === 'F_rf') {
-      // Fix F_rf, sweep V_rf
-      const F_rf = fixedValue;
-      for (let V_rf = globalRanges.V_rf.min; V_rf <= globalRanges.V_rf.max; V_rf += 1) {
-        const q = optimizer.calculateQParameter(a, b, V_rf, F_rf);
-        const depth = optimizer.calculateTrapDepth(a, b, V_rf, F_rf);
-        const secular_freq = optimizer.calculateSecularFrequency(a, b, V_rf, F_rf);
-        points.push({ a, b, V_rf, F_rf, q, depth, secular_freq });
-      }
-    }
-    
-    setSweepResults(points);
-  }, [selectedAB, fixingMode, fixedValue, optimizer, globalRanges]);
+      
+      setSweepResults(points);
+      setIsCalculating(false);
+    }, 100);
+  };
 
   return (
     <div className="optimization-workflow">
@@ -127,7 +135,7 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
             <h3>Target Specifications</h3>
             <div className="specs-grid">
               <div className="spec-item">
-                <label>Max q-parameter</label>
+                <label>q-parameter must be lower than</label>
                 <input
                   type="number"
                   value={targetSpecs.q_max}
@@ -138,7 +146,7 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                 />
               </div>
               <div className="spec-item">
-                <label>Max V_RF (V)</label>
+                <label>RF voltage must be lower than (V)</label>
                 <input
                   type="number"
                   value={targetSpecs.V_rf_max}
@@ -149,7 +157,7 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                 />
               </div>
               <div className="spec-item">
-                <label>Min Depth (eV)</label>
+                <label>Trap depth must be higher than (eV)</label>
                 <input
                   type="number"
                   value={targetSpecs.depth_min}
@@ -160,7 +168,7 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                 />
               </div>
               <div className="spec-item">
-                <label>Max Depth (eV)</label>
+                <label>Trap depth must be lower than (eV)</label>
                 <input
                   type="number"
                   value={targetSpecs.depth_max}
@@ -171,7 +179,7 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                 />
               </div>
               <div className="spec-item">
-                <label>Min Secular Freq (MHz)</label>
+                <label>Secular frequency must be higher than (MHz)</label>
                 <input
                   type="number"
                   value={targetSpecs.secular_freq}
@@ -231,8 +239,8 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                     <line x1="40" y1="200" x2="40" y2="40" stroke="#374151" strokeWidth="2"/>
                     
                     {/* Axis labels */}
-                    <text x="175" y="230" textAnchor="middle" className="axis-label">a (μm)</text>
-                    <text x="15" y="120" textAnchor="middle" className="axis-label" transform="rotate(-90 15 120)">b (μm)</text>
+                    <text x="175" y="230" textAnchor="middle" className="axis-label">center-innerDC (μm)</text>
+                    <text x="15" y="120" textAnchor="middle" className="axis-label" transform="rotate(-90 15 120)">center-RF (μm)</text>
                     
                     {/* Plot curve */}
                     {abTradeoff.length > 1 && (
@@ -288,11 +296,11 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                   <h4>Selected Geometry</h4>
                   <div className="geometry-params">
                     <div className="param-row">
-                      <span>a (electrode gap):</span>
+                      <span>center-innerDC:</span>
                       <span>{selectedAB.a.toFixed(1)} μm</span>
                     </div>
                     <div className="param-row">
-                      <span>b (electrode width):</span>
+                      <span>center-RF:</span>
                       <span>{selectedAB.b.toFixed(1)} μm</span>
                     </div>
                     <div className="param-row">
@@ -343,24 +351,27 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                 {fixingMode && (
                   <div className="fixed-value-control">
                     <label>
-                      Fixed value: {fixedValue.toFixed(fixingMode === 'q' ? 3 : fixingMode === 'F_rf' ? 2 : 0)} {
+                      Fixed value ({
                         fixingMode === 'q' ? '' : 
                         fixingMode === 'V_rf' ? 'V' : 'MHz'
-                      }
+                      })
                     </label>
-                    <Slider.Root
-                      className="slider-root"
-                      value={[fixedValue]}
-                      onValueChange={([value]) => setFixedValue(value)}
+                    <input
+                      type="number"
+                      value={fixedValue}
+                      onChange={(e) => setFixedValue(Number(e.target.value))}
                       min={fixingMode === 'q' ? 0.05 : fixingMode === 'V_rf' ? globalRanges.V_rf.min : globalRanges.F_rf.min}
                       max={fixingMode === 'q' ? 0.5 : fixingMode === 'V_rf' ? globalRanges.V_rf.max : globalRanges.F_rf.max}
                       step={fixingMode === 'q' ? 0.001 : fixingMode === 'V_rf' ? 1 : 0.01}
+                      className="fixed-value-input"
+                    />
+                    <button 
+                      onClick={calculateParameterSweep}
+                      className="calculate-button"
+                      disabled={isCalculating}
                     >
-                      <Slider.Track className="slider-track">
-                        <Slider.Range className="slider-range" />
-                      </Slider.Track>
-                      <Slider.Thumb className="slider-thumb" />
-                    </Slider.Root>
+                      {isCalculating ? 'Calculating...' : 'Calculate Parameter Sweep'}
+                    </button>
                   </div>
                 )}
               </div>
@@ -370,7 +381,7 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
 
         {/* Column 2: Step 4 */}
         <div className="workflow-column column-2">
-          {sweepResults.length > 0 && (
+          {(sweepResults.length > 0 || isCalculating) && (
             <div className="workflow-step">
               <h3>Step 4: Parameter Relationships</h3>
               <div className="sweep-results">
@@ -564,7 +575,17 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                 </div>
                 
                 <div className="results-table">
-                  <h4>Sample Results (First 20)</h4>
+                  <div className="results-header">
+                    <h4>Sample Results</h4>
+                    <label className="filter-checkbox">
+                      <input 
+                        type="checkbox" 
+                        checked={showOnlyFeasible}
+                        onChange={(e) => setShowOnlyFeasible(e.target.checked)}
+                      />
+                      Show only feasible results
+                    </label>
+                  </div>
                   <div className="table-container">
                     <table>
                       <thead>
@@ -578,7 +599,26 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                         </tr>
                       </thead>
                       <tbody>
-                        {sweepResults.slice(0, 20).map((point, i) => {
+                        {isCalculating ? (
+                          <tr>
+                            <td colSpan={6} className="loading-cell">
+                              <div className="loading-indicator">
+                                <div className="loading-spinner"></div>
+                                Calculating parameter sweep...
+                              </div>
+                            </td>
+                          </tr>
+                        ) : (() => {
+                          const filteredResults = showOnlyFeasible 
+                            ? sweepResults.filter(point => {
+                                return (point.q || 0) <= targetSpecs.q_max &&
+                                       (point.V_rf || 0) <= targetSpecs.V_rf_max &&
+                                       (point.depth || 0) >= targetSpecs.depth_min &&
+                                       (point.depth || 0) <= targetSpecs.depth_max;
+                              })
+                            : sweepResults;
+                          
+                          return filteredResults.map((point, i) => {
                           const feasible = 
                             (point.q || 0) <= targetSpecs.q_max &&
                             (point.V_rf || 0) <= targetSpecs.V_rf_max &&
@@ -595,7 +635,8 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                               <td>{feasible ? '✓' : '✗'}</td>
                             </tr>
                           );
-                        })}
+                        });
+                        })()}
                       </tbody>
                     </table>
                   </div>

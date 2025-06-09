@@ -63,7 +63,6 @@ function App() {
               optimizer={optimizer} 
               targetSpecs={targetSpecs}
               globalRanges={globalRanges}
-              onRangesChange={setGlobalRanges}
             />
           </div>
         </div>
