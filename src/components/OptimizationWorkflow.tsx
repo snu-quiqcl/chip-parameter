@@ -297,7 +297,27 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                   <div className="geometry-params">
                     <div className="param-row">
                       <span>a(center-innerDC):</span>
-                      <span>{selectedAB.a.toFixed(1)} μm</span>
+                      <div className="param-value-input">
+                        <input
+                          type="number"
+                          value={selectedAB.a}
+                          onChange={(e) => {
+                            const newA = Number(e.target.value);
+                            // Find the closest point in abTradeoff
+                            const closestIndex = abTradeoff.reduce((closest, point, index) => {
+                              const currentDiff = Math.abs(point.a - newA);
+                              const closestDiff = Math.abs(abTradeoff[closest].a - newA);
+                              return currentDiff < closestDiff ? index : closest;
+                            }, 0);
+                            setAbIndex(closestIndex);
+                          }}
+                          min={20}
+                          max={100}
+                          step={0.1}
+                          className="geometry-input"
+                        />
+                        <span className="unit">μm</span>
+                      </div>
                     </div>
                     <div className="param-row">
                       <span>b(center-RF):</span>

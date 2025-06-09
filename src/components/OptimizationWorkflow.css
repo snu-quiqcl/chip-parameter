@@ -204,6 +204,36 @@
   color: #1f2937;
 }
 
+.param-value-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.geometry-input {
+  width: 70px;
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: right;
+  transition: border-color 0.2s ease;
+}
+
+.geometry-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.param-value-input .unit {
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'Monaco', 'Menlo', monospace;
+}
+
 /* Step 3: Parameter Fixing */
 .fixing-controls {
   display: flex;
