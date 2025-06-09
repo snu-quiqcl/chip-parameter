@@ -73,7 +73,7 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges }: Para
           
           <div className="control-group">
             <label>
-              <span>center-innerDC</span>
+              <span>a(center-innerDC)</span>
               <span className="value">{a.toFixed(1)} μm</span>
             </label>
             <Slider.Root
@@ -93,7 +93,7 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges }: Para
 
           <div className="control-group">
             <label>
-              <span>center-RF</span>
+              <span>b(center-RF)</span>
               <span className="value">{b.toFixed(1)} μm</span>
             </label>
             <Slider.Root
@@ -122,7 +122,7 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges }: Para
               onValueChange={([value]) => setV_rf(value)}
               min={ranges.V_rf.min}
               max={ranges.V_rf.max}
-              step={5}
+              step={1}
             >
               <Slider.Track className="slider-track">
                 <Slider.Range className="slider-range" />
@@ -142,7 +142,7 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges }: Para
               onValueChange={([value]) => setF_rf(value)}
               min={ranges.F_rf.min}
               max={ranges.F_rf.max}
-              step={0.5}
+              step={0.01}
             >
               <Slider.Track className="slider-track">
                 <Slider.Range className="slider-range" />

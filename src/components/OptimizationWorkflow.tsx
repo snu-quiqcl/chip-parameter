@@ -239,8 +239,8 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                     <line x1="40" y1="200" x2="40" y2="40" stroke="#374151" strokeWidth="2"/>
                     
                     {/* Axis labels */}
-                    <text x="175" y="230" textAnchor="middle" className="axis-label">center-innerDC (μm)</text>
-                    <text x="15" y="120" textAnchor="middle" className="axis-label" transform="rotate(-90 15 120)">center-RF (μm)</text>
+                    <text x="175" y="230" textAnchor="middle" className="axis-label">a(center-innerDC) (μm)</text>
+                    <text x="15" y="120" textAnchor="middle" className="axis-label" transform="rotate(-90 15 120)">b(center-RF) (μm)</text>
                     
                     {/* Plot curve */}
                     {abTradeoff.length > 1 && (
@@ -296,11 +296,11 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                   <h4>Selected Geometry</h4>
                   <div className="geometry-params">
                     <div className="param-row">
-                      <span>center-innerDC:</span>
+                      <span>a(center-innerDC):</span>
                       <span>{selectedAB.a.toFixed(1)} μm</span>
                     </div>
                     <div className="param-row">
-                      <span>center-RF:</span>
+                      <span>b(center-RF):</span>
                       <span>{selectedAB.b.toFixed(1)} μm</span>
                     </div>
                     <div className="param-row">
