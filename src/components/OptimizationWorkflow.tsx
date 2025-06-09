@@ -168,17 +168,6 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                 />
               </div>
               <div className="spec-item">
-                <label>Trap depth must be lower than (eV)</label>
-                <input
-                  type="number"
-                  value={targetSpecs.depth_max}
-                  onChange={(e) => onTargetSpecsChange({...targetSpecs, depth_max: Number(e.target.value)})}
-                  step="0.01"
-                  min="0.01"
-                  max="0.5"
-                />
-              </div>
-              <div className="spec-item">
                 <label>Secular frequency must be higher than (MHz)</label>
                 <input
                   type="number"
@@ -300,7 +289,7 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                       <div className="param-value-input">
                         <input
                           type="number"
-                          value={selectedAB.a}
+                          value={selectedAB.a.toFixed(1)}
                           onChange={(e) => {
                             const newA = Number(e.target.value);
                             // Find the closest point in abTradeoff
@@ -311,8 +300,8 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                             }, 0);
                             setAbIndex(closestIndex);
                           }}
-                          min={20}
-                          max={100}
+                          min={globalRanges.a.min}
+                          max={globalRanges.a.max}
                           step={0.1}
                           className="geometry-input"
                         />
@@ -441,8 +430,7 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                           const feasible = 
                             (point.q || 0) <= targetSpecs.q_max &&
                             (point.V_rf || 0) <= targetSpecs.V_rf_max &&
-                            (point.depth || 0) >= targetSpecs.depth_min &&
-                            (point.depth || 0) <= targetSpecs.depth_max;
+                            (point.depth || 0) >= targetSpecs.depth_min;
                           
                           return (
                             <circle
@@ -509,8 +497,7 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                               const feasible = 
                                 (point.q || 0) <= targetSpecs.q_max &&
                                 (point.V_rf || 0) <= targetSpecs.V_rf_max &&
-                                (point.depth || 0) >= targetSpecs.depth_min &&
-                                (point.depth || 0) <= targetSpecs.depth_max;
+                                (point.depth || 0) >= targetSpecs.depth_min;
                               
                               return (
                                 <circle
@@ -572,8 +559,7 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                               const feasible = 
                                 (point.q || 0) <= targetSpecs.q_max &&
                                 (point.V_rf || 0) <= targetSpecs.V_rf_max &&
-                                (point.depth || 0) >= targetSpecs.depth_min &&
-                                (point.depth || 0) <= targetSpecs.depth_max;
+                                (point.depth || 0) >= targetSpecs.depth_min;
                               
                               return (
                                 <circle
@@ -633,8 +619,7 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                             ? sweepResults.filter(point => {
                                 return (point.q || 0) <= targetSpecs.q_max &&
                                        (point.V_rf || 0) <= targetSpecs.V_rf_max &&
-                                       (point.depth || 0) >= targetSpecs.depth_min &&
-                                       (point.depth || 0) <= targetSpecs.depth_max;
+                                       (point.depth || 0) >= targetSpecs.depth_min;
                               })
                             : sweepResults;
                           
@@ -642,8 +627,7 @@ export function OptimizationWorkflow({ optimizer, targetSpecs, globalRanges, onT
                           const feasible = 
                             (point.q || 0) <= targetSpecs.q_max &&
                             (point.V_rf || 0) <= targetSpecs.V_rf_max &&
-                            (point.depth || 0) >= targetSpecs.depth_min &&
-                            (point.depth || 0) <= targetSpecs.depth_max;
+                            (point.depth || 0) >= targetSpecs.depth_min;
                           
                           return (
                             <tr key={i} className={feasible ? 'feasible-row' : 'infeasible-row'}>

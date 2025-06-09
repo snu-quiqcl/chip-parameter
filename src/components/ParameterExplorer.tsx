@@ -50,7 +50,6 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges }: Para
       q <= targetSpecs.q_max &&
       V_rf <= targetSpecs.V_rf_max &&
       depth >= targetSpecs.depth_min &&
-      depth <= targetSpecs.depth_max &&
       secular_freq >= targetSpecs.secular_freq;
 
     setTrapParams({
@@ -231,7 +230,7 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges }: Para
                 <span className="param-label">Trap Depth</span>
                 <span className="param-value">{trapParams.depth.toFixed(4)} eV</span>
                 <span className="param-target">
-                  (target: {targetSpecs.depth_min.toFixed(2)} - {targetSpecs.depth_max.toFixed(2)} eV)
+                  (target: ≥ {targetSpecs.depth_min.toFixed(2)} eV)
                 </span>
               </div>
               
@@ -268,9 +267,9 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges }: Para
                 <span>V_RF ≤ {targetSpecs.V_rf_max}V</span>
                 <span>{V_rf <= targetSpecs.V_rf_max ? '✓' : '✗'}</span>
               </div>
-              <div className={`constraint-item ${trapParams.depth >= targetSpecs.depth_min && trapParams.depth <= targetSpecs.depth_max ? 'pass' : 'fail'}`}>
-                <span>Depth in range</span>
-                <span>{trapParams.depth >= targetSpecs.depth_min && trapParams.depth <= targetSpecs.depth_max ? '✓' : '✗'}</span>
+              <div className={`constraint-item ${trapParams.depth >= targetSpecs.depth_min ? 'pass' : 'fail'}`}>
+                <span>Depth ≥ {targetSpecs.depth_min.toFixed(2)}eV</span>
+                <span>{trapParams.depth >= targetSpecs.depth_min ? '✓' : '✗'}</span>
               </div>
               <div className={`constraint-item ${trapParams.secular_freq >= targetSpecs.secular_freq ? 'pass' : 'fail'}`}>
                 <span>Freq ≥ {targetSpecs.secular_freq.toFixed(1)}MHz</span>

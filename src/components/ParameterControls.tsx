@@ -89,38 +89,22 @@ export function ParameterControls({
 
       <div className="control-group">
         <label>
-          <span>Trap depth must be within range</span>
-          <span className="value">{targetSpecs.depth_min.toFixed(2)} - {targetSpecs.depth_max.toFixed(2)} eV</span>
+          <span>Trap depth must be higher than</span>
+          <span className="value">{targetSpecs.depth_min.toFixed(2)} eV</span>
         </label>
-        <div className="double-slider">
-          <Slider.Root
-            className="slider-root"
-            value={[targetSpecs.depth_min]}
-            onValueChange={([value]) => handleChange('depth_min', value)}
-            min={0.01}
-            max={0.2}
-            step={0.01}
-          >
-            <Slider.Track className="slider-track">
-              <Slider.Range className="slider-range" />
-            </Slider.Track>
-            <Slider.Thumb className="slider-thumb" />
-          </Slider.Root>
-          
-          <Slider.Root
-            className="slider-root"
-            value={[targetSpecs.depth_max]}
-            onValueChange={([value]) => handleChange('depth_max', value)}
-            min={0.01}
-            max={0.2}
-            step={0.01}
-          >
-            <Slider.Track className="slider-track">
-              <Slider.Range className="slider-range" />
-            </Slider.Track>
-            <Slider.Thumb className="slider-thumb" />
-          </Slider.Root>
-        </div>
+        <Slider.Root
+          className="slider-root"
+          value={[targetSpecs.depth_min]}
+          onValueChange={([value]) => handleChange('depth_min', value)}
+          min={0.01}
+          max={0.2}
+          step={0.01}
+        >
+          <Slider.Track className="slider-track">
+            <Slider.Range className="slider-range" />
+          </Slider.Track>
+          <Slider.Thumb className="slider-thumb" />
+        </Slider.Root>
       </div>
 
       <button 

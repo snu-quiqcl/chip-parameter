@@ -5,7 +5,6 @@ export interface TargetSpecs {
   q_max: number;            // maximum q-parameter
   V_rf_max: number;         // V, maximum RF voltage
   depth_min: number;        // eV, minimum trap depth
-  depth_max: number;        // eV, maximum trap depth
 }
 
 export interface Solution {
@@ -39,8 +38,7 @@ export class IonTrapOptimizer {
       secular_freq: 2.5,
       q_max: 0.25,
       V_rf_max: 250,
-      depth_min: 0.05,
-      depth_max: 0.1
+      depth_min: 0.05
     };
   }
 
@@ -149,8 +147,7 @@ export class IonTrapOptimizer {
             const meets_criteria = 
               sol.q_required <= this.target_specs.q_max &&
               sol.V_rf_required <= this.target_specs.V_rf_max &&
-              depth >= this.target_specs.depth_min &&
-              depth <= this.target_specs.depth_max;
+              depth >= this.target_specs.depth_min;
             
             results.push({
               a,
@@ -163,7 +160,7 @@ export class IonTrapOptimizer {
               meets_criteria,
               V_rf_feasible: sol.V_rf_required <= this.target_specs.V_rf_max,
               q_feasible: sol.q_required <= this.target_specs.q_max,
-              depth_feasible: depth >= this.target_specs.depth_min && depth <= this.target_specs.depth_max
+              depth_feasible: depth >= this.target_specs.depth_min
             });
           }
         }
@@ -200,8 +197,7 @@ export class IonTrapOptimizer {
           const meets_criteria = 
             sol.q_required <= this.target_specs.q_max &&
             sol.V_rf_required <= this.target_specs.V_rf_max &&
-            depth >= this.target_specs.depth_min &&
-            depth <= this.target_specs.depth_max;
+            depth >= this.target_specs.depth_min;
           
           results.push({
             a,
@@ -214,7 +210,7 @@ export class IonTrapOptimizer {
             meets_criteria,
             V_rf_feasible: sol.V_rf_required <= this.target_specs.V_rf_max,
             q_feasible: sol.q_required <= this.target_specs.q_max,
-            depth_feasible: depth >= this.target_specs.depth_min && depth <= this.target_specs.depth_max
+            depth_feasible: depth >= this.target_specs.depth_min
           });
         }
       }

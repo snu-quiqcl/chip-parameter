@@ -1,4 +1,4 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceArea, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer } from 'recharts';
 import { Solution, TargetSpecs } from '../../utils/ionTrapOptimizer';
 
 interface TrapDepthChartProps {
@@ -53,12 +53,12 @@ export function TrapDepthChart({ a70Results, smallAResults, targetSpecs }: TrapD
                 labelFormatter={(label) => `b = ${label} μm`}
               />
               <Legend />
-              <ReferenceArea 
-                y1={targetSpecs.depth_min} 
-                y2={targetSpecs.depth_max} 
-                fill="#48bb78"
-                fillOpacity={0.2}
-                label="Target Range"
+              <ReferenceLine 
+                y={targetSpecs.depth_min} 
+                stroke="#48bb78"
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                label="Min Target"
               />
               <Line 
                 type="monotone" 
@@ -89,12 +89,12 @@ export function TrapDepthChart({ a70Results, smallAResults, targetSpecs }: TrapD
                 labelFormatter={(label) => `a = ${label} μm`}
               />
               <Legend />
-              <ReferenceArea 
-                y1={targetSpecs.depth_min} 
-                y2={targetSpecs.depth_max} 
-                fill="#48bb78"
-                fillOpacity={0.2}
-                label="Target Range"
+              <ReferenceLine 
+                y={targetSpecs.depth_min} 
+                stroke="#48bb78"
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                label="Min Target"
               />
               <Line 
                 type="monotone" 
