@@ -74,7 +74,21 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges }: Para
           <div className="control-group">
             <label>
               <span>a(center-innerDC)</span>
-              <span className="value">{a.toFixed(1)} μm</span>
+              <input
+                type="number"
+                value={a}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  if (val >= ranges.a.min && val <= ranges.a.max) {
+                    setA(val);
+                  }
+                }}
+                min={ranges.a.min}
+                max={ranges.a.max}
+                step={0.5}
+                className="value-input"
+              />
+              <span className="unit">μm</span>
             </label>
             <Slider.Root
               className="slider-root"
@@ -94,7 +108,21 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges }: Para
           <div className="control-group">
             <label>
               <span>b(center-RF)</span>
-              <span className="value">{b.toFixed(1)} μm</span>
+              <input
+                type="number"
+                value={b}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  if (val >= Math.max(ranges.b.min, a + 1) && val <= ranges.b.max) {
+                    setB(val);
+                  }
+                }}
+                min={Math.max(ranges.b.min, a + 1)}
+                max={ranges.b.max}
+                step={0.5}
+                className="value-input"
+              />
+              <span className="unit">μm</span>
             </label>
             <Slider.Root
               className="slider-root"
@@ -114,7 +142,21 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges }: Para
           <div className="control-group">
             <label>
               <span>V_RF (RF voltage)</span>
-              <span className="value">{V_rf.toFixed(0)} V</span>
+              <input
+                type="number"
+                value={V_rf}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  if (val >= ranges.V_rf.min && val <= ranges.V_rf.max) {
+                    setV_rf(val);
+                  }
+                }}
+                min={ranges.V_rf.min}
+                max={ranges.V_rf.max}
+                step={1}
+                className="value-input"
+              />
+              <span className="unit">V</span>
             </label>
             <Slider.Root
               className="slider-root"
@@ -134,7 +176,21 @@ export function ParameterExplorer({ optimizer, targetSpecs, globalRanges }: Para
           <div className="control-group">
             <label>
               <span>F_RF (RF frequency)</span>
-              <span className="value">{F_rf.toFixed(1)} MHz</span>
+              <input
+                type="number"
+                value={F_rf}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  if (val >= ranges.F_rf.min && val <= ranges.F_rf.max) {
+                    setF_rf(val);
+                  }
+                }}
+                min={ranges.F_rf.min}
+                max={ranges.F_rf.max}
+                step={0.01}
+                className="value-input"
+              />
+              <span className="unit">MHz</span>
             </label>
             <Slider.Root
               className="slider-root"
